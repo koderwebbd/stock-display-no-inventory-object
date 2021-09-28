@@ -1,0 +1,33 @@
+{% comment %} Inventory tracking on product page 
+            <div id="variant-inventory" class="{% unless current_variant.available %} hide {% endunless %}">
+              {% if current_variant.inventory_management == "shopify" %}
+              	<span class="variant-inventory-number">{{ current_variant.inventory_quantity }}</span> in local stock!
+              {% else %}
+              	This product is available.
+              {% endif %}
+            </div>
+            {% endcomment %}
+        
+            <script>
+              window._VARIANTS = {};              
+              window._VARIANTS_inventory_policy = {};
+
+              {% for variant in product.variants %}
+              	window._VARIANTS[{{ variant.id }}] = {{ variant.inventory_quantity }}
+                window._VARIANTS_inventory_policy[{{ variant.id }}] = '{{ variant.inventory_policy }}'
+              {% endfor %}
+            </script>
+        
+        	{% if product.selected_or_first_available_variant.inventory_management == "shopify" and product.selected_or_first_available_variant.inventory_quantity > 0 %}
+        
+            	<span class="stock_message">LAGERWARE, LIEFERFRIST 1-3 WERKTAGE</span>
+        
+            {% elsif product.selected_or_first_available_variant.inventory_policy == "continue"  %}
+        
+                <span class="stock_message">WIRD NACHGELIEFERT, LIEFERFRIST 4 WOCHEN</span>
+        
+            {% else %}
+        
+             	<span class="stock_message">AUSVERKAUFT</span>
+        
+            {% endif %}
